@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>a little something</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root{
+    --bg-1: #ffe3ea;
+    --bg-2: #f3e6ff;
+    --card: #fffbf7;
+    --accent: #e8527f;
+    --accent-soft: #f4a8c3;
+    --accent-fill: #fdeef3;
+    --text: #3a2e35;
+    --text-soft: #8a7884;
+  }
+
+  html, body {
+    height: 100%;
+    font-family: 'Quicksand', sans-serif;
+    color: var(--text);
+    background: linear-gradient(160deg, var(--bg-1) 0%, var(--bg-2) 100%);
+  }
+
+  body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 24px;
+  }
+
+  /* ambient floating hearts */
+  .hearts {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 0;
+  }
+  .heart {
+    position: absolute;
+    bottom: -10%;
+    color: var(--accent-soft);
+    opacity: 0.55;
+    animation: float-up linear infinite;
+  }
+  @keyframes float-up {
+    0%   { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0; }
+    10%  { opacity: 0.6; }
+    90%  { opacity: 0.4; }
+    100% { transform: translateY(-110vh) translateX(var(--drift, 20px)) rotate(20deg); opacity: 0; }
+  }
+
+  .card {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 380px;
+    background: var(--card);
+    border-radius: 28px;
+    padding: 40px 28px 32px;
+    box-shadow: 0 20px 60px -15px rgba(232, 82, 127, 0.35);
+    text-align: center;
+  }
+
+  .screen { display: none; animation: rise 0.45s ease; }
+  .screen.active { display: block; }
+
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .icon-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .calendar-chip {
+    background: var(--accent);
+    color: white;
+    border-radius: 10px;
+    width: 44px;
+    overflow: hidden;
+    font-weight: 700;
+    line-height: 1;
+    box-shadow: 0 6px 14px -4px rgba(232, 82, 127, 0.6);
+  }
+  .calendar-chip .month { font-size: 10px; padding: 4px 0; background: #c43564; letter-spacing: 1px; }
+  .calendar-chip .day { font-size: 20px; padding: 6px 0; }
+
+  .pulse-heart {
+    font-size: 26px;
+    display: inline-block;
+    animation: pulse 1.4s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.18); }
+  }
+
+  h1 {
+    font-family: 'Caveat', cursive;
+    font-weight: 700;
+    font-size: 42px;
+    color: var(--accent);
+    margin-bottom: 6px;
+    line-height: 1.1;
+  }
+
+  .subtitle {
+    font-size: 14px;
+    color: var(--text-soft);
+    margin-bottom: 24px;
+    line-height: 1.5;
+  }
+
+  .greeting {
+    font-size: 17px;
+    line-height: 1.6;
+    margin-bottom: 28px;
+  }
+  .greeting .from {
+    display: block;
+    margin-top: 14px;
+    font-size: 13px;
+    color: var(--text-soft);
+  }
+
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+
+  .option-btn {
+    width: 100%;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--text);
+    background: #fff;
+    border: 1.5px solid #f0d4dd;
+    border-radius: 16px;
+    padding: 14px 16px;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 0.15s ease, background 0.15s ease, transform 0.1s ease;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .option-btn:active { transform: scale(0.98); }
+  .option-btn .check {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 1.5px solid #e3c2cf;
+    flex-shrink: 0;
+    position: relative;
+  }
+  .option-btn.selected {
+    border-color: var(--accent);
+    background: var(--accent-fill);
+  }
+  .option-btn.selected .check {
+    border-color: var(--accent);
+    background: var(--accent);
+  }
+  .option-btn.selected .check::after {
+    content: "";
+    position: absolute;
+    left: 5px; top: 2px;
+    width: 5px; height: 9px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+
+  .back-link {
+    display: inline-block;
+    font-size: 13px;
+    color: var(--text-soft);
+    background: none;
+    border: none;
+    margin-bottom: 18px;
+    cursor: pointer;
+    text-decoration: underline;
+    box-shadow: none;
+    padding: 0;
+  }
+
+  button.primary {
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    color: white;
+    background: var(--accent);
+    border: none;
+    border-radius: 999px;
+    padding: 14px 36px;
+    cursor: pointer;
+    box-shadow: 0 10px 24px -8px rgba(232, 82, 127, 0.55);
+    transition: transform 0.15s ease, opacity 0.15s ease;
+  }
+  button.primary:active { transform: scale(0.96); }
+  button.primary:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+  button.primary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+  .confirm-date {
+    font-family: 'Caveat', cursive;
+    font-size: 28px;
+    color: var(--accent);
+    margin: 4px 0 26px;
+    line-height: 1.3;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .heart, .pulse-heart, .screen { animation: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hearts" id="hearts"></div>
+
+<div class="card">
+
+  <!-- Screen 1: intro -->
+  <div class="screen active" id="screen-1">
+    <div class="icon-row"><span class="pulse-heart">💌</span></div>
+    <div class="greeting">
+      Hey <span id="name-slot-1"></span> 👋<br><br>
+      I'd love to take you out — I've got a few dates that work for me,
+      <strong>pick whichever suits you best.</strong>
+      <span class="from">— <span id="from-slot-1"></span></span>
+    </div>
+    <button class="primary" id="to-screen-2">Continue</button>
+  </div>
+
+  <!-- Screen 2: pick a date -->
+  <div class="screen" id="screen-2">
+    <div class="icon-row">
+      <div class="calendar-chip">
+        <div class="month" id="chip-month">JUL</div>
+        <div class="day" id="chip-day">31</div>
+      </div>
+      <span style="font-size:22px;">💕</span>
+    </div>
+    <h1>Pick a date</h1>
+    <p class="subtitle">Whichever day works for you 🌸</p>
+    <div class="options" id="date-options"></div>
+    <button class="primary" id="to-screen-3" disabled>Continue</button>
+  </div>
+
+  <!-- Screen 3: pick a time -->
+  <div class="screen" id="screen-3">
+    <button class="back-link" id="back-to-2">← change date</button>
+    <div class="icon-row"><span style="font-size:24px;">⏰</span></div>
+    <h1>Pick a time</h1>
+    <p class="subtitle" id="time-subtitle"></p>
+    <div class="options" id="time-options"></div>
+    <button class="primary" id="to-screen-4" disabled>Continue</button>
+  </div>
+
+  <!-- Screen 4: confirmation -->
+  <div class="screen" id="screen-4">
+    <div class="icon-row"><span class="pulse-heart">💗</span></div>
+    <h1 style="font-size:36px;">It's a date!</h1>
+    <div class="confirm-date" id="confirm-date"></div>
+    <p class="subtitle">Can't wait. I'll sort the rest 🤍</p>
+  </div>
+
+</div>
+
+<script>
+  // ============================================================
+  // CUSTOMIZE HERE
+  const HER_NAME = "Her Name";
+  const YOUR_NAME = "Your Name";
+
+  // Each date option: ISO date + array of times in 24hr "HH:MM"
+  const DATE_OPTIONS = [
+    { date: "2026-07-31", times: ["13:45", "17:00", "20:15"] },
+    { date: "2026-08-01", times: ["17:00", "20:15"] },
+    { date: "2026-08-02", times: ["15:15", "18:30"] },
+  ];
+  // ============================================================
+
+  document.getElementById('name-slot-1').textContent = HER_NAME;
+  document.getElementById('from-slot-1').textContent = YOUR_NAME;
+
+  // ambient hearts
+  const heartsContainer = document.getElementById('hearts');
+  const heartChars = ['💗','💕','🤍'];
+  for (let i = 0; i < 14; i++) {
+    const h = document.createElement('span');
+    h.className = 'heart';
+    h.textContent = heartChars[Math.floor(Math.random() * heartChars.length)];
+    h.style.left = Math.random() * 100 + '%';
+    h.style.fontSize = (14 + Math.random() * 14) + 'px';
+    h.style.setProperty('--drift', (Math.random() * 60 - 30) + 'px');
+    h.style.animationDuration = (8 + Math.random() * 10) + 's';
+    h.style.animationDelay = (Math.random() * 10) + 's';
+    heartsContainer.appendChild(h);
+  }
+
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+  }
+
+  function formatDateLong(iso) {
+    const d = new Date(iso + 'T00:00:00');
+    return d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+  }
+  function formatDateShort(iso) {
+    const d = new Date(iso + 'T00:00:00');
+    return d.toLocaleDateString('en-US', { weekday: 'short', month: 'long', day: 'numeric' });
+  }
+  function formatTime(hhmm) {
+    const [h, m] = hhmm.split(':').map(Number);
+    const period = h >= 12 ? 'PM' : 'AM';
+    const hour12 = ((h + 11) % 12) + 1;
+    return `${hour12}:${m.toString().padStart(2, '0')} ${period}`;
+  }
+
+  let selectedDate = null;
+  let selectedTime = null;
+
+  // build date options
+  const dateOptionsEl = document.getElementById('date-options');
+  DATE_OPTIONS.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.type = 'button';
+    btn.innerHTML = `<span>${formatDateShort(opt.date)}</span><span class="check"></span>`;
+    btn.addEventListener('click', () => {
+      selectedDate = opt;
+      selectedTime = null;
+      document.querySelectorAll('#date-options .option-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      document.getElementById('to-screen-3').disabled = false;
+
+      const d = new Date(opt.date + 'T00:00:00');
+      document.getElementById('chip-month').textContent = d.toLocaleDateString('en-US', { month: 'short' }).toUpperCase();
+      document.getElementById('chip-day').textContent = d.getDate();
+    });
+    dateOptionsEl.appendChild(btn);
+  });
+
+  document.getElementById('to-screen-2').addEventListener('click', () => showScreen('screen-2'));
+  document.getElementById('back-to-2').addEventListener('click', () => showScreen('screen-2'));
+
+  document.getElementById('to-screen-3').addEventListener('click', () => {
+    if (!selectedDate) return;
+    document.getElementById('time-subtitle').textContent = `Available times for ${formatDateShort(selectedDate.date)} 🌸`;
+    const timeOptionsEl = document.getElementById('time-options');
+    timeOptionsEl.innerHTML = '';
+    document.getElementById('to-screen-4').disabled = true;
+
+    selectedDate.times.forEach(t => {
+      const btn = document.createElement('button');
+      btn.className = 'option-btn';
+      btn.type = 'button';
+      btn.innerHTML = `<span>${formatTime(t)}</span><span class="check"></span>`;
+      btn.addEventListener('click', () => {
+        selectedTime = t;
+        document.querySelectorAll('#time-options .option-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        document.getElementById('to-screen-4').disabled = false;
+      });
+      timeOptionsEl.appendChild(btn);
+    });
+
+    showScreen('screen-3');
+  });
+
+  document.getElementById('to-screen-4').addEventListener('click', () => {
+    if (!selectedDate || !selectedTime) return;
+    document.getElementById('confirm-date').textContent =
+      `${formatDateLong(selectedDate.date)} at ${formatTime(selectedTime)}`;
+    showScreen('screen-4');
+  });
+</script>
+
+</body>
+</html>
