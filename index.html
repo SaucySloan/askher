@@ -18,6 +18,7 @@
     --accent-fill: #fdeef3;
     --text: #3a2e35;
     --text-soft: #8a7884;
+    --whatsapp: #25D366;
   }
 
   html, body {
@@ -201,7 +202,7 @@
     padding: 0;
   }
 
-  button.primary {
+  button.primary, a.primary {
     font-family: 'Quicksand', sans-serif;
     font-weight: 700;
     font-size: 16px;
@@ -213,13 +214,26 @@
     cursor: pointer;
     box-shadow: 0 10px 24px -8px rgba(232, 82, 127, 0.55);
     transition: transform 0.15s ease, opacity 0.15s ease;
+    display: inline-block;
+    text-decoration: none;
   }
-  button.primary:active { transform: scale(0.96); }
+  button.primary:active, a.primary:active { transform: scale(0.96); }
   button.primary:disabled {
     opacity: 0.4;
     cursor: not-allowed;
   }
-  button.primary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  button.primary:focus-visible, a.primary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+  a.whatsapp-btn {
+    background: var(--whatsapp);
+    box-shadow: 0 10px 24px -8px rgba(37, 211, 102, 0.55);
+  }
+
+  .sent-msg {
+    font-size: 13px;
+    color: var(--text-soft);
+    margin-top: 16px;
+  }
 
   .confirm-date {
     font-family: 'Caveat', cursive;
@@ -282,7 +296,8 @@
     <div class="icon-row"><span class="pulse-heart">💗</span></div>
     <h1 style="font-size:36px;">It's a date!</h1>
     <div class="confirm-date" id="confirm-date"></div>
-    <p class="subtitle">Can't wait. I'll sort the rest 🤍</p>
+    <a class="primary whatsapp-btn" id="send-whatsapp" target="_blank" rel="noopener">Send my answer 📲</a>
+    <p class="sent-msg">Tap to confirm it with me on WhatsApp 🤍</p>
   </div>
 
 </div>
@@ -292,6 +307,9 @@
   // CUSTOMIZE HERE
   const HER_NAME = "Nazreen";
   const YOUR_NAME = "SaucySloan";
+
+  // Your WhatsApp number, digits only, country code without the +
+  const WHATSAPP_NUMBER = "27766855175";
 
   // Each date option: ISO date + array of times in 24hr "HH:MM"
   const DATE_OPTIONS = [
@@ -392,8 +410,13 @@
 
   document.getElementById('to-screen-4').addEventListener('click', () => {
     if (!selectedDate || !selectedTime) return;
-    document.getElementById('confirm-date').textContent =
-      `${formatDateLong(selectedDate.date)} at ${formatTime(selectedTime)}`;
+    const dateTimeText = `${formatDateLong(selectedDate.date)} at ${formatTime(selectedTime)}`;
+    document.getElementById('confirm-date').textContent = dateTimeText;
+
+    const message = `Hey it's ${HER_NAME}! I picked ${dateTimeText} for our date 💕`;
+    const waLink = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+    document.getElementById('send-whatsapp').href = waLink;
+
     showScreen('screen-4');
   });
 </script>
