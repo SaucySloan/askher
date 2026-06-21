@@ -22,7 +22,7 @@
   }
 
   html, body {
-    height: 100%;
+    min-height: 100%;
     font-family: 'Quicksand', sans-serif;
     color: var(--text);
     background: linear-gradient(160deg, var(--bg-1) 0%, var(--bg-2) 100%);
@@ -136,6 +136,28 @@
     margin-top: 14px;
     font-size: 13px;
     color: var(--text-soft);
+  }
+
+  /* letter screen */
+  .letter-heading {
+    text-align: left;
+    margin-bottom: 18px;
+  }
+  .letter-text {
+    text-align: left;
+    font-size: 14.5px;
+    line-height: 1.7;
+    color: var(--text);
+  }
+  .letter-text p {
+    margin-bottom: 14px;
+  }
+  .letter-sign {
+    text-align: right;
+    font-family: 'Caveat', cursive;
+    font-size: 24px;
+    color: var(--accent);
+    margin-bottom: 24px;
   }
 
   .options {
@@ -254,8 +276,22 @@
 
 <div class="card">
 
+  <!-- Screen 0: the letter -->
+  <div class="screen active" id="screen-0">
+    <div class="icon-row"><span class="pulse-heart">💌</span></div>
+    <h1 class="letter-heading">Dear <span id="letter-name-slot"></span>,</h1>
+    <div class="letter-text">
+      <p>I wanted to write you something to express how you make me feel and what I admire about you, even though words don't quite capture it.</p>
+      <p>You motivate me. You give me hope and a sense of faith I didn't expect to find. The smallest things, like a notification from you, are enough to make me smile, and your wit and humor make me laugh like no one else can. I remember how at peace I felt in your arms; it's a feeling I haven't been able to shake since.</p>
+      <p>There's so much I admire about you — your mannerisms, the strength you show even in your moments of vulnerability, your energy, your independence, your beauty. The way your face scrunches up when you laugh is impossibly endearing. But if I had to choose one thing, it would be your eyes; there's something about your brown eyes that I fell for the moment I really looked into them.</p>
+      <p>I hope this makes you smile today, Naz. And I hope you'll let me try, because I'd really like to.</p>
+    </div>
+    <p class="letter-sign">— <span id="letter-from-slot"></span></p>
+    <button class="primary" id="to-screen-1">Continue</button>
+  </div>
+
   <!-- Screen 1: intro -->
-  <div class="screen active" id="screen-1">
+  <div class="screen" id="screen-1">
     <div class="icon-row"><span class="pulse-heart">💌</span></div>
     <div class="greeting">
       Hey <span id="name-slot-1"></span> 👋<br><br>
@@ -306,7 +342,7 @@
   // ============================================================
   // CUSTOMIZE HERE
   const HER_NAME = "Nazreen";
-  const YOUR_NAME = "SaucySloan";
+  const YOUR_NAME = "Sloan";
 
   // Your WhatsApp number, digits only, country code without the +
   const WHATSAPP_NUMBER = "27766855175";
@@ -319,6 +355,8 @@
   ];
   // ============================================================
 
+  document.getElementById('letter-name-slot').textContent = HER_NAME;
+  document.getElementById('letter-from-slot').textContent = YOUR_NAME;
   document.getElementById('name-slot-1').textContent = HER_NAME;
   document.getElementById('from-slot-1').textContent = YOUR_NAME;
 
@@ -340,6 +378,7 @@
   function showScreen(id) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById(id).classList.add('active');
+    window.scrollTo(0, 0);
   }
 
   function formatDateLong(iso) {
@@ -381,6 +420,7 @@
     dateOptionsEl.appendChild(btn);
   });
 
+  document.getElementById('to-screen-1').addEventListener('click', () => showScreen('screen-1'));
   document.getElementById('to-screen-2').addEventListener('click', () => showScreen('screen-2'));
   document.getElementById('back-to-2').addEventListener('click', () => showScreen('screen-2'));
 
